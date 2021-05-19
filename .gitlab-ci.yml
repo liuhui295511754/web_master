@@ -1,0 +1,19 @@
+image: node:alpine
+
+stages:
+    - build
+
+deploy:
+    stage: build
+    when: manual
+    script:
+        - npm install
+        - npm run build:prod
+        - docker stop zh-web
+        - docker rm zh-web
+        - docker build -t zh-web .
+        - docker run --name zh-web -p 8001:80 -d zh-web
+    only:
+        - master
+    tags:
+        - run220
